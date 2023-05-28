@@ -8,27 +8,13 @@ def abrir_archivo_json(ruta_archivo: str) -> list:
     devuelve una lista
     '''
     with open(ruta_archivo, "r") as archivo:
-        contenido = json.load(archivo)
-    return contenido["jugadores"]
+        contenido_archivo_json = json.load(archivo)
+    return contenido_archivo_json["jugadores"]
 
-def guardar_archivo_json(ruta_archivo, contenido):
+
+def guardar_archivo_json(ruta_archivo, contenido_archivo_json):
     with open(ruta_archivo, "w") as archivo:
-        json.dump(contenido, archivo)
-
-def mostrar_jugador(lista: list) -> list:
-    '''
-    recibe una lista y devuelve una lista
-    recibe un str
-    devuelve lista
-    '''
-    print("\033[93mLos mejores jugadores de la NBA:\033[0m")
-    contador = 1
-    mensaje = None
-    for jugador in lista:
-        mensaje = "\033[92m{0}-\033[0m {1} - {2}".format(contador, jugador["nombre"], jugador["posicion"])
-        contador += 1
-        print(mensaje)
-    print(" ")
+        json.dump(contenido_archivo_json, archivo)
 
 def mostrar_menu_principal(lista: list) -> None:
     '''
@@ -42,58 +28,105 @@ def mostrar_menu_principal(lista: list) -> None:
     print("3- Logros del jugador")
     print("4- Mostrar promedio de puntos por partido del Dream Team")
 
-
-def mostrar_submenu_jugador(lista: list) -> None:
+def mostrar_jugador(lista: list) -> list:
     '''
-    recibe una lista
-    muestra el menu
-    devuelve la opcion elejida
+    recibe una lista y devuelve una lista
+    recibe un str
+    devuelve lista
     '''
-    respuesta = input("\033[96mElija un jugador por su nombre: \033[0m")
-    jugadores_coincidentes = []
-
-    # Construir el patrón regex para buscar palabras con letras faltantes
-    patron = r"(?=.*{0}).*{1}".format(respuesta[0], ".*".join(respuesta[1:]))
-
-    # Buscar coincidencias en la lista de jugadores
+    print("\033[93mLos mejores jugadores de la NBA:\033[0m")
+    indice = 1
+    mensaje = None
     for jugador in lista:
-        if re.match(patron, jugador["nombre"], re.IGNORECASE):
-            jugadores_coincidentes.append(jugador)
+        mensaje = "\033[92m{0}-\033[0m {1} - {2}".format(indice, jugador["nombre"], jugador["posicion"])
+        indice += 1
+        print(mensaje)
+    print(" ")
+    return lista
 
-    if jugadores_coincidentes:
+def jugadores_que_coinciden(lista: list) -> list:
+    '''
+    recibe una lista de jugadores coincidentes
+    devuelve lista ordenada en Nombre y Posicion del jugador
+    '''
+    if lista:
         # Mostrar los jugadores coincidentes
         print("Jugadores que coinciden con el patrón:")
-        for jugador in jugadores_coincidentes:
+        for jugador in lista:
             print("Nombre: \033[91m{0}\033[0m - Posicion: \033[91m{1}\033[0m".format(jugador["nombre"], jugador["posicion"]))
             # Mostrar el resto de estadísticas, logros, etc.
     else:
         print("No se encontraron jugadores que coincidan con el patrón.")
+    return lista
 
-    if len(jugadores_coincidentes) == 1:
-        jugador_seleccionado = jugadores_coincidentes[0]
-        print("\nEstadísticas del jugador \033[92m{0}\033[0m:".format(jugador_seleccionado["nombre"]))
-        print("Temporadas jugadas: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["temporadas"]))
-        print("Puntos totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["puntos_totales"]))
-        print("Promedio de puntos por partido: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["promedio_puntos_por_partido"]))
-        print("Rebotes totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["rebotes_totales"]))
-        print("Promedio de rebotes por partido: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["promedio_rebotes_por_partido"]))
-        print("Asistencias totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["asistencias_totales"]))
-        print("Promedio de asistencias por partido: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["promedio_asistencias_por_partido"]))
-        print("Robos totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["robos_totales"]))
-        print("Bloqueos totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["bloqueos_totales"]))
-        print("Porcentaje de tiros de campo: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_de_campo"]))
-        print("Porcentaje de tiros libres: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_libres"]))
-        print("Porcentaje de tiros triples: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_triples"]))
-        pregunta_guardar_estadisticas_txt = input("\033[91mDesea guardar las estadisticas en un archivo CSV?: \033[0m")
-        if pregunta_guardar_estadisticas_txt == True:
-            guardar_estadisticas_jugador(ruta_archivo="")
-        print(" ")
-    else:
-        print("No hubo coincidencia")
+def imprimir_estadistica_de_jugador (jugador_seleccionado: dict) -> list:
+    '''
+    recibe un diccionario y devuelve una lista con las estadisticas de los jugadores seleccionados
+    devuelve una lista ordenada
+    '''
+    print("\nEstadísticas del jugador \033[92m{0}\033[0m:".format(jugador_seleccionado["nombre"]))
+    print("Temporadas jugadas: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["temporadas"]))
+    print("Puntos totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["puntos_totales"]))
+    print("Promedio de puntos por partido: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["promedio_puntos_por_partido"]))
+    print("Rebotes totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["rebotes_totales"]))
+    print("Promedio de rebotes por partido: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["promedio_rebotes_por_partido"]))
+    print("Asistencias totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["asistencias_totales"]))
+    print("Promedio de asistencias por partido: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["promedio_asistencias_por_partido"]))
+    print("Robos totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["robos_totales"]))
+    print("Bloqueos totales: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["bloqueos_totales"]))
+    print("Porcentaje de tiros de campo: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_de_campo"]))
+    print("Porcentaje de tiros libres: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_libres"]))
+    print("Porcentaje de tiros triples: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_triples"]))
+    pregunta_guardar_estadisticas_txt = input("\033[91mDesea guardar las estadisticas en un archivo CSV?: \033[0m")
+    if pregunta_guardar_estadisticas_txt == True:
+        guardar_estadisticas_jugador(ruta_archivo="")
+
+def elegir_jugador(lista: list):
+    respuesta = input("\033[96mElija un jugador por su nombre: \033[0m")
+    jugadores_coincidentes = []
+    patron = r"(?=.*{0}).*{1}".format(respuesta[0], ".*".join(respuesta[1:]))
+    for jugador in lista:
+        if re.match(patron, jugador["nombre"], re.IGNORECASE):
+            jugadores_coincidentes.append(jugador)
+    return jugadores_coincidentes
+
+def mostrar_estadisticas_jugador(lista: list) -> list:
+    '''
+    recibe una lista
+    muestra el menu
+    devuelve una lista con la opcion elegida
+    '''
+    jugadores_coincidentes = elegir_jugador(lista)
+
+    while True:
+        if len(jugadores_coincidentes) == 1:
+            jugador_seleccionado = jugadores_coincidentes[0]
+            print("\033[92mlista 01\033[0m", jugadores_coincidentes)
+            imprimir_estadistica_de_jugador(jugador_seleccionado)
+            print(" ")
+            break
+        elif len(jugadores_coincidentes) > 1:
+            mostrar_jugador(jugadores_coincidentes)  # Mostrar los jugadores coincidentes
+            print("\033[92mlista 01\033[0m", jugadores_coincidentes)
+            print("\033[92mlista 02\033[0m", jugadores_coincidentes)
+            jugadores_coincidentes = elegir_jugador(jugadores_coincidentes)  # Actualizar jugadores_coincidentes_02
+            if len(jugadores_coincidentes) == 1:
+                jugador_seleccionado = jugadores_coincidentes[0]
+                print("\033[92mlista 02\033[0m", jugadores_coincidentes)
+                imprimir_estadistica_de_jugador(jugador_seleccionado)
+                break
+            break
+        else:
+            # Mostrar el resto de estadísticas, logros, etc.
+            print("No hubo coincidencia")
+            break
+
+
+
 
 def guardar_estadisticas_jugador(jugador, ruta_archivo):
     # Crear o abrir el archivo CSV en modo de escritura
-    with open(ruta_archivo, mode='w', newline='') as archivo_csv:
+    with open(ruta_archivo, 'w') as archivo_csv:
         # Crear el escritor CSV
         escritor_csv = csv.writer(archivo_csv)
 
@@ -129,7 +162,7 @@ def ejecutar_opcion(opcion: str, lista_jugadores: list):
         mostrar_jugador(lista_jugadores)
     elif opcion == "2":
         mostrar_jugador(lista_jugadores)
-        mostrar_submenu_jugador(lista_jugadores)  # Pasa la lista de jugadores como argumento
+        mostrar_estadisticas_jugador(lista_jugadores)  # Pasa la lista de jugadores como argumento
     elif opcion == "3":
         print("Saliendo del programa...")
     else:
@@ -139,7 +172,7 @@ def ejecutar_opcion(opcion: str, lista_jugadores: list):
 # Programa principal
 def main():
     lista_jugadores = []
-    ruta_archivo = "I:\\workspace_ani\\UTN_Programacion_2023\\Programacion_1\\python\\Programacion_1\\parcial\\dt.json"
+    ruta_archivo = "I:\\workspace_ani\\UTN_Programacion_2023\\Programacion_1\\python\\Programacion_1\\parcial\\primer_parcial_UTN\\dt.json"
     lista_jugadores = abrir_archivo_json(ruta_archivo)
     while True:
         mostrar_menu_principal(lista_jugadores)
