@@ -1,6 +1,7 @@
 import json
 import re
 import csv
+import os
 
 def abrir_archivo_json(ruta_archivo: str) -> list:
     '''
@@ -50,11 +51,9 @@ def jugadores_que_coinciden(lista: list) -> list:
     devuelve lista ordenada en Nombre y Posicion del jugador
     '''
     if lista:
-        # Mostrar los jugadores coincidentes
         print("Jugadores que coinciden con el patrón:")
         for jugador in lista:
             print("Nombre: \033[91m{0}\033[0m - Posicion: \033[91m{1}\033[0m".format(jugador["nombre"], jugador["posicion"]))
-            # Mostrar el resto de estadísticas, logros, etc.
     else:
         print("No se encontraron jugadores que coincidan con el patrón.")
     return lista
@@ -77,9 +76,24 @@ def imprimir_estadistica_de_jugador (jugador_seleccionado: dict) -> list:
     print("Porcentaje de tiros de campo: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_de_campo"]))
     print("Porcentaje de tiros libres: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_libres"]))
     print("Porcentaje de tiros triples: \033[92m{0}\033[0m".format(jugador_seleccionado["estadisticas"]["porcentaje_tiros_triples"]))
-    pregunta_guardar_estadisticas_txt = input("\033[91mDesea guardar las estadisticas en un archivo CSV?: \033[0m")
-    if pregunta_guardar_estadisticas_txt == True:
-        guardar_estadisticas_jugador(ruta_archivo="")
+    while True:
+        pregunta_guardar_estadisticas_txt_01 = input("\033[96mDesea guardar las estadisticas en un archivo CSV?: \033[0m Si/No ")
+        if pregunta_guardar_estadisticas_txt_01.lower() == "si":
+            while True:
+                nombre_de_guardado = input("\033[96mCon qué nombre quiere guardar el archivo?: \033[0m ")
+                ruta_archivo = "I:\\workspace_ani\\UTN_Programacion_2023\\Programacion_1\\python\\Programacion_1\\parcial\\primer_parcial_UTN\\{0}.csv".format(nombre_de_guardado)
+                if archivo_existe(ruta_archivo):
+                    respuesta = input("\033[91mYA EXISTE ESE ARCHIVO. Quiere reemplazarlo? Si/No: \033[0m")
+                    if respuesta.lower() == "si":
+                        guardar_estadisticas_jugador(jugador_seleccionado, ruta_archivo)
+                        break
+                    elif respuesta.lower() == "no":
+                        continue
+                else:
+                    guardar_estadisticas_jugador(jugador_seleccionado, ruta_archivo)
+                    break
+        break
+
 
 def elegir_jugador(lista: list):
     respuesta = input("\033[96mElija un jugador por su nombre: \033[0m")
@@ -101,56 +115,52 @@ def mostrar_estadisticas_jugador(lista: list) -> list:
     while True:
         if len(jugadores_coincidentes) == 1:
             jugador_seleccionado = jugadores_coincidentes[0]
-            print("\033[92mlista 01\033[0m", jugadores_coincidentes)
+            #print("\033[92mlista 01\033[0m", jugadores_coincidentes)
             imprimir_estadistica_de_jugador(jugador_seleccionado)
             print(" ")
             break
         elif len(jugadores_coincidentes) > 1:
-            mostrar_jugador(jugadores_coincidentes)  # Mostrar los jugadores coincidentes
-            print("\033[92mlista 01\033[0m", jugadores_coincidentes)
-            print("\033[92mlista 02\033[0m", jugadores_coincidentes)
-            jugadores_coincidentes = elegir_jugador(jugadores_coincidentes)  # Actualizar jugadores_coincidentes_02
+            mostrar_jugador(jugadores_coincidentes)
+            #print("\033[92mlista 01\033[0m", jugadores_coincidentes)
+            #print("\033[92mlista 02\033[0m", jugadores_coincidentes)
+            jugadores_coincidentes = elegir_jugador(jugadores_coincidentes)
             if len(jugadores_coincidentes) == 1:
                 jugador_seleccionado = jugadores_coincidentes[0]
-                print("\033[92mlista 02\033[0m", jugadores_coincidentes)
+                #print("\033[92mlista 02\033[0m", jugadores_coincidentes)
                 imprimir_estadistica_de_jugador(jugador_seleccionado)
                 break
             break
         else:
-            # Mostrar el resto de estadísticas, logros, etc.
             print("No hubo coincidencia")
             break
 
+def archivo_existe(ruta_archivo):
+    return os.path.exists(ruta_archivo) and os.path.isfile(ruta_archivo)
 
-
-
-def guardar_estadisticas_jugador(jugador, ruta_archivo):
-    # Crear o abrir el archivo CSV en modo de escritura
+def guardar_estadisticas_jugador(jugador_seleccionado, ruta_archivo):
     with open(ruta_archivo, 'w') as archivo_csv:
-        # Crear el escritor CSV
-        escritor_csv = csv.writer(archivo_csv)
+        guardador_csv = csv.writer(archivo_csv)
 
-        # Escribir la cabecera del archivo CSV
-        escritor_csv.writerow(['Nombre', 'Temporadas', 'Puntos totales', 'Promedio de puntos por partido',
+        guardador_csv.writerow(['Nombre', 'Temporadas', 'Puntos totales', 'Promedio de puntos por partido',
                                 'Rebotes totales', 'Promedio de rebotes por partido', 'Asistencias totales',
                                 'Promedio de asistencias por partido', 'Robos totales', 'Bloqueos totales',
                                 'Porcentaje de tiros de campo', 'Porcentaje de tiros libres',
                                 'Porcentaje de tiros triples'])
 
-        # Escribir las estadísticas del jugador
-        escritor_csv.writerow([jugador['nombre'], jugador['estadisticas']['temporadas'],
-                                jugador['estadisticas']['puntos_totales'],
-                                jugador['estadisticas']['promedio_puntos_por_partido'],
-                                jugador['estadisticas']['rebotes_totales'],
-                                jugador['estadisticas']['promedio_rebotes_por_partido'],
-                                jugador['estadisticas']['asistencias_totales'],
-                                jugador['estadisticas']['promedio_asistencias_por_partido'],
-                                jugador['estadisticas']['robos_totales'],
-                                jugador['estadisticas']['bloqueos_totales'],
-                                jugador['estadisticas']['porcentaje_tiros_de_campo'],
-                                jugador['estadisticas']['porcentaje_tiros_libres'],
-                                jugador['estadisticas']['porcentaje_tiros_triples']])
-    print("Estadísticas del jugador guardadas en el archivo CSV: {}".format(ruta_archivo))
+        guardador_csv.writerow([jugador_seleccionado['nombre'], jugador_seleccionado['estadisticas']['temporadas'],
+                                jugador_seleccionado['estadisticas']['puntos_totales'],
+                                jugador_seleccionado['estadisticas']['promedio_puntos_por_partido'],
+                                jugador_seleccionado['estadisticas']['rebotes_totales'],
+                                jugador_seleccionado['estadisticas']['promedio_rebotes_por_partido'],
+                                jugador_seleccionado['estadisticas']['asistencias_totales'],
+                                jugador_seleccionado['estadisticas']['promedio_asistencias_por_partido'],
+                                jugador_seleccionado['estadisticas']['robos_totales'],
+                                jugador_seleccionado['estadisticas']['bloqueos_totales'],
+                                jugador_seleccionado['estadisticas']['porcentaje_tiros_de_campo'],
+                                jugador_seleccionado['estadisticas']['porcentaje_tiros_libres'],
+                                jugador_seleccionado['estadisticas']['porcentaje_tiros_triples']])
+    print("\n\033[96mArchivo guardado de manera exitosa\033[0m")
+    print("\033[96mRuta del archivo:\033[0m\n {0}\n".format(ruta_archivo))
 
 
 def ejecutar_opcion(opcion: str, lista_jugadores: list):
@@ -162,7 +172,7 @@ def ejecutar_opcion(opcion: str, lista_jugadores: list):
         mostrar_jugador(lista_jugadores)
     elif opcion == "2":
         mostrar_jugador(lista_jugadores)
-        mostrar_estadisticas_jugador(lista_jugadores)  # Pasa la lista de jugadores como argumento
+        mostrar_estadisticas_jugador(lista_jugadores)
     elif opcion == "3":
         print("Saliendo del programa...")
     else:
