@@ -170,24 +170,11 @@ def guardar_estadisticas_jugador(jugador_seleccionado, ruta_archivo):
     with open(ruta_archivo, 'w') as archivo_csv:
         guardador_csv = csv.writer(archivo_csv)
 
-        guardador_csv.writerow(['Nombre', 'Temporadas', 'Puntos totales', 'Promedio de puntos por partido',
-                                'Rebotes totales', 'Promedio de rebotes por partido', 'Asistencias totales',
-                                'Promedio de asistencias por partido', 'Robos totales', 'Bloqueos totales',
-                                'Porcentaje de tiros de campo', 'Porcentaje de tiros libres',
-                                'Porcentaje de tiros triples'])
+        guardador_csv.writerow(['Nombre', 'Posicion','Temporadas'])
 
-        guardador_csv.writerow([jugador_seleccionado['nombre'], jugador_seleccionado['estadisticas']['temporadas'],
-                                jugador_seleccionado['estadisticas']['puntos_totales'],
-                                jugador_seleccionado['estadisticas']['promedio_puntos_por_partido'],
-                                jugador_seleccionado['estadisticas']['rebotes_totales'],
-                                jugador_seleccionado['estadisticas']['promedio_rebotes_por_partido'],
-                                jugador_seleccionado['estadisticas']['asistencias_totales'],
-                                jugador_seleccionado['estadisticas']['promedio_asistencias_por_partido'],
-                                jugador_seleccionado['estadisticas']['robos_totales'],
-                                jugador_seleccionado['estadisticas']['bloqueos_totales'],
-                                jugador_seleccionado['estadisticas']['porcentaje_tiros_de_campo'],
-                                jugador_seleccionado['estadisticas']['porcentaje_tiros_libres'],
-                                jugador_seleccionado['estadisticas']['porcentaje_tiros_triples']])
+        guardador_csv.writerow([jugador_seleccionado['nombre'],
+                                jugador_seleccionado['posicion'],
+                                jugador_seleccionado['estadisticas']['temporadas']])
     print("\n\033[96mArchivo guardado de manera exitosa\033[0m")
     print("\033[96mRuta del archivo:\033[0m\n {0}\n".format(ruta_archivo))
 
