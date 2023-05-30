@@ -204,6 +204,7 @@ def ejecutar_opcion(opcion: str, lista_jugadores: list):
         mostrar_estadisticas_jugador(lista_jugadores)
     elif opcion == "3":
         print("\t\033[91mProfe, solo llegué hasta acá...\n\t...y se que la cagué\033[0m\n")
+        exit()
     elif opcion == "4":
         print("\t\033[91m...la cagué...\n\t...la cagué...\033[0m\n")
         exit()
