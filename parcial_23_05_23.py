@@ -257,32 +257,35 @@ def promedio(suma: int|float, lista: list) -> int|float:
 
 def filtrar_jugadores_por_promedio(lista_jugadores, estadistica):
     os.system("clear")
-    valor_ingresado_txt = input("Ingrese un número para filtrar los jugadores por su {0}: ".format(estadistica))
+    while True:
+        valor_ingresado_txt = input("Ingrese un número para filtrar los jugadores por su {0}: ".format(estadistica))
+        if validar_valor_ingresado(valor_ingresado_txt):
+            valor_ingresado = float(valor_ingresado_txt)
+            jugadores_promedio_mayor = []
 
-    if validar_valor_ingresado(valor_ingresado_txt):
-        valor_ingresado = float(valor_ingresado_txt)
-        jugadores_promedio_mayor = []
+            for jugador in lista_jugadores:
+                promedio_estadistica = jugador["estadisticas"][estadistica]
+                if promedio_estadistica > valor_ingresado:
+                    jugadores_promedio_mayor.append(jugador)
 
-        for jugador in lista_jugadores:
-            promedio_estadistica = jugador["estadisticas"][estadistica]
-            if promedio_estadistica > valor_ingresado:
-                jugadores_promedio_mayor.append(jugador)
-
-        if len(jugadores_promedio_mayor) > 0:
-            os.system("clear")
-            print("\n\033[96mJugadores con un {0} mayor a:\033[0m \033[92m{1}\033[0m".format(estadistica, valor_ingresado))
-            jugadores_ordenados = sorted(jugadores_promedio_mayor, key=lambda x: x['posicion'])
-            for jugador in jugadores_ordenados:
-                print("- Nombre: \033[92m{0}\033[0m".format(jugador["nombre"]))
-                print("  Posición: \033[92m{0}\033[0m".format(jugador["posicion"]))
-                print("  {0}: \033[92m{1}\033[0m".format(estadistica, jugador["estadisticas"][estadistica]))
-                print("--------")
+            if len(jugadores_promedio_mayor) > 0:
+                os.system("clear")
+                print("\n\033[96mJugadores con un {0} mayor a:\033[0m \033[92m{1}\033[0m".format(estadistica, valor_ingresado))
+                jugadores_ordenados = sorted(jugadores_promedio_mayor, key=lambda x: x['posicion'])
+                for jugador in jugadores_ordenados:
+                    print("- Nombre: \033[92m{0}\033[0m".format(jugador["nombre"]))
+                    print("  Posición: \033[92m{0}\033[0m".format(jugador["posicion"]))
+                    print("  {0}: \033[92m{1}\033[0m".format(estadistica, jugador["estadisticas"][estadistica]))
+                    print("--------")
+                presione_enter_para_continuar()
+                break
+            else:
+                print("No hay jugadores con un \033[96m{0}\033[0m mayor a \033[96m{1}\033[0m\n".format(estadistica, valor_ingresado))
+            presione_enter_para_continuar()
+            break
         else:
-            print("No hay jugadores con un {0} mayor a {1}".format(estadistica, valor_ingresado))
-    else:
-        print("El valor ingresado no es válido. Por favor, ingrese un número entero o decimal positivo.")
+            print("El valor ingresado no es válido. Por favor, ingrese un número entero o decimal positivo.")
 
-    presione_enter_para_continuar()
 
 def buscar_mayores_logros():
     pass
