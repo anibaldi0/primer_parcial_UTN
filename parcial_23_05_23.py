@@ -44,7 +44,7 @@ def mostrar_menu_principal(lista: list) -> None:
     print("17- Ingrese un valor para saber que jugadores hayan tenido un porcentaje de tiros triples superior a ese valor ")
     print("18- jugador con la mayor cantidad de temporadas jugadas ")
     print("19- Ingrese un valor y mostrar los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor ")
-    print("21- Salir")
+    print("20- Salir")
 
 def mostrar_jugadores(lista: list) -> list:
     '''
@@ -319,6 +319,7 @@ def guardar_estadisticas_jugador(jugador_seleccionado, ruta_archivo):
                                 jugador_seleccionado['estadisticas']['porcentaje_tiros_triples']])
     print("\n\033[92mArchivo guardado de manera exitosa\033[0m")
     print("\033[92mRuta del archivo:\033[0m\n {0}".format(ruta_archivo))
+    presione_enter_para_continuar()
 
 def presione_enter_para_continuar():
     '''
@@ -339,7 +340,6 @@ def ejecutar_opcion(opcion: str, lista_jugadores: list):
         os.system("clear")
         mostrar_jugadores(lista_jugadores)
         mostrar_jugadores_coincidentes(lista_jugadores, imprimir_estadistica_de_jugador)
-        presione_enter_para_continuar()
     elif opcion == "3":
         os.system("clear")
         mostrar_jugadores(lista_jugadores)
@@ -407,9 +407,7 @@ def ejecutar_opcion(opcion: str, lista_jugadores: list):
     elif opcion == "19":
         filtrar_jugadores_por_promedio(lista_jugadores, "porcentaje_tiros_de_campo")
     elif opcion == "20":
-        pass
-    elif opcion == "21":
-        pass
+        exit
     else:
         print("Opción inválida.")
 
@@ -424,7 +422,7 @@ def main():
         opcion = input("\t\033[96mIngrese la opción deseada:\033[0m ")
         print(" ")
         ejecutar_opcion(opcion, lista_jugadores)
-        if opcion == "21":
+        if opcion == "20":
             break
 main()
 
